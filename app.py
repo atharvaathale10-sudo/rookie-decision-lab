@@ -13,6 +13,13 @@ import scenarios as S
 import viz as V
 
 st.set_page_config(page_title="The Rookie — Decision Lab", page_icon="🏭", layout="wide")
+# Metric values default to ~2.25rem and truncate with "…" in narrow columns; keep them
+# readable and let them wrap instead of clipping.
+st.markdown("""<style>
+[data-testid="stMetricValue"] { font-size: 1.6rem; }
+[data-testid="stMetricValue"] > div { white-space: normal; overflow: visible; text-overflow: clip; }
+[data-testid="stMetricLabel"] p { white-space: normal; }
+</style>""", unsafe_allow_html=True)
 
 BENCHMARK = 7792.26
 STEPS = {1: "Frame the demand", 2: "Choose candidate sites", 3: "Set rules and rates",
@@ -660,13 +667,16 @@ def step5():
     inp = ss.result_inputs
     k = res["kpis"]
     st.caption(f"Mode {res['mode']} · {mods_str(res['modules'])}")
-    kc = st.columns(6)
+    kc = st.columns(4)
     kc[0].metric("Annual relevant cost", f"₹{res['objective']:,.2f} cr")
-    kc[1].metric("Unit cost", f"₹{k['unit_cost']:,.0f} / t")
+    kc[1].metric("Unit cost", f"₹{k['unit_cost']:,.0f}/t")
     kc[2].metric("Total capex", f"₹{k['capex_total']:,.0f} cr")
-    kc[3].metric("Nameplate clinker / grinding", f"{k['clinker_nameplate']:.1f} / {k['grinding_nameplate']:.1f}")
-    kc[4].metric("Avg lead cement / clinker", f"{k['cement_lead_km']:.0f} / {k['clinker_lead_km']:.0f} km")
-    kc[5].metric("Highest utilisation", f"{k['max_util']:.1f}%")
+    kc[3].metric("Highest utilisation", f"{k['max_util']:.1f}%")
+    kc = st.columns(4)
+    kc[0].metric("Nameplate clinker", f"{k['clinker_nameplate']:.1f} MTPA")
+    kc[1].metric("Nameplate grinding", f"{k['grinding_nameplate']:.1f} MTPA")
+    kc[2].metric("Avg cement lead", f"{k['cement_lead_km']:.0f} km")
+    kc[3].metric("Avg clinker lead", f"{k['clinker_lead_km']:.0f} km")
 
     t_map, t_sites, t_flows, t_cost, t_val = st.tabs(
         ["🗺️ Map", "🏭 Open sites", "🚚 Flows", "💰 Cost reconciliation", "✅ Validation"])
