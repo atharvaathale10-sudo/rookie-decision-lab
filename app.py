@@ -16,9 +16,11 @@ st.set_page_config(page_title="The Rookie — Decision Lab", page_icon="🏭", l
 # Metric values default to ~2.25rem and truncate with "…" in narrow columns; keep them
 # readable and let them wrap instead of clipping.
 st.markdown("""<style>
-[data-testid="stMetricValue"] { font-size: 1.6rem; }
-[data-testid="stMetricValue"] > div { white-space: normal; overflow: visible; text-overflow: clip; }
-[data-testid="stMetricLabel"] p { white-space: normal; }
+[data-testid="stMetricValue"] { font-size: clamp(1.05rem, 1.55vw, 1.6rem); line-height: 1.25; }
+[data-testid="stMetricValue"] p, [data-testid="stMetricValue"] div {
+  white-space: normal !important; overflow: visible !important; text-overflow: clip !important;
+}
+[data-testid="stMetricLabel"] p { white-space: normal !important; }
 </style>""", unsafe_allow_html=True)
 
 BENCHMARK = 7792.26
@@ -603,7 +605,7 @@ def step4():
     if is_stale():
         st.warning("⚠️ Inputs have changed since this solve — **re-solve needed**. Showing the previous result.")
     st.subheader(f"Result — mode {res['mode']}")
-    mc = st.columns(5)
+    mc = st.columns([1, 1.6, 0.9, 1, 1])
     mc[0].metric("Solver status", res["status"])
     mc[1].metric("Objective", fmt_cr(res.get("objective")) if res["feasible"] else "INFEASIBLE")
     mc[2].metric("Wall time", f"{res['wall_time']:.2f} s")
